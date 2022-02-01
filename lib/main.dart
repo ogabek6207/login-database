@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:login/ui/register_screen.dart';
-
-import 'login/login_screen.dart';
-import 'ui/login_screen.dart';
+import 'package:login/ui/login_screen.dart';
 
 void main() {
-  runApp( const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const RegisterScreen(),
+      home: const LoginScreen(),
     );
   }
 }

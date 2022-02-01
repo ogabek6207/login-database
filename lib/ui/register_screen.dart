@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:login/ui/home_screen.dart';
 import 'package:login/repository/repository.dart';
 
 import '../model/user_model.dart';
@@ -18,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _controllerSurName = TextEditingController();
   final TextEditingController _controllerLogin = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+  final Repository _repository = Repository();
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +47,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
-                controller: _controllerName,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  labelText: "name",
-                ),
+              controller: _controllerName,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: "name",
               ),
             ),
-
+          ),
           const SizedBox(
             height: 12,
           ),
@@ -120,25 +119,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           GestureDetector(
             onTap: () async {
-              Repository _repository = Repository();
               if (_controllerName.text.length >= 3) {
                 int userId = await _repository.saveUser(
                   UserModel(
-                    id: 0,
                     name: _controllerName.text,
                     surname: _controllerSurName.text,
                     login: _controllerLogin.text,
                     password: _controllerPassword.text,
                   ),
                 );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const HomeScreen();
-                    },
-                  ),
-                );
+                if (userId >= 0) {
+                  Navigator.pop(context);
+                }
               }
             },
             child: Container(

@@ -8,14 +8,13 @@ class DatabaseHelper {
 
   factory DatabaseHelper() => _instance;
 
-  //user
+  //COLUMN
   final String tableUser = 'userTable';
   final String columnUserId = 'id';
   final String columnUserName = 'name';
   final String columnUserSurname = 'surname';
   final String columnUserLogin = 'login';
   final String columnUserPassword = 'password';
-
 
   static Database? _db;
 
@@ -45,8 +44,6 @@ class DatabaseHelper {
         '$columnUserSurname TEXT, '
         '$columnUserLogin TEXT,'
         '$columnUserPassword TEXT)');
-
-
   }
 
   //user save
@@ -77,9 +74,7 @@ class DatabaseHelper {
     return products;
   }
 
-
   //user update
-
   Future<int> updateUser(UserModel products) async {
     var dbClient = await db;
     return await dbClient.update(
@@ -89,6 +84,7 @@ class DatabaseHelper {
       whereArgs: [products.id],
     );
   }
+
   Future<int> deleteUser(int id) async {
     var dbClient = await db;
     return await dbClient.delete(
@@ -102,6 +98,4 @@ class DatabaseHelper {
     var dbClient = await db;
     return dbClient.close();
   }
-
-
 }
