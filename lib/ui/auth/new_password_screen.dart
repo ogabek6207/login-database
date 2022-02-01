@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:login/model/user_model.dart';
 import 'package:login/repository/repository.dart';
 
+class NewPasswordScreen extends StatefulWidget {
+  final String name;
+  final String surname;
+  final int userId;
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({
+  const NewPasswordScreen({
     Key? key,
+    required this.name,
+    required this.surname,
+    required this.userId,
   }) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _NewPasswordScreenState createState() => _NewPasswordScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _NewPasswordScreenState extends State<NewPasswordScreen> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerSurName = TextEditingController();
   final TextEditingController _controllerLogin = TextEditingController();
@@ -20,6 +26,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final Repository _repository = Repository();
 
   @override
+  void initState() {
+    _controllerName.text = widget.name;
+    _controllerSurName.text = widget.surname;
+    setState(() {});
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -27,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Register",
+          "New Password",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -47,6 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
+              readOnly: true,
               controller: _controllerName,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -67,6 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
+              readOnly: true,
               controller: _controllerSurName,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -90,7 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _controllerLogin,
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                labelText: "login",
+                labelText: "new login",
               ),
             ),
           ),
@@ -110,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _controllerPassword,
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                labelText: "password",
+                labelText: "new password",
               ),
             ),
           ),
@@ -119,18 +134,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           GestureDetector(
             onTap: () async {
-              if (_controllerName.text.length >= 3) {
-                int userId = await _repository.saveUser(
+              if (_controllerPassword.text.length >= 3 &&
+                  _controllerLogin.text.length >= 3) {
+                int userId = await _repository.updateUser(
                   UserModel(
+                    id: widget.userId,
                     name: _controllerName.text,
                     surname: _controllerSurName.text,
                     login: _controllerLogin.text,
                     password: _controllerPassword.text,
                   ),
                 );
-                print(userId);
-                if (userId >= 0) {
-                  Navigator.pop(context);
+                if (userId > 0) {
+                  Navigator.popUntil(context, (route) => route.isFirst);
                 }
               }
             },

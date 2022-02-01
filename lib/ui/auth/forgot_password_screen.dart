@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login/dialog/center_dialog.dart';
 import 'package:login/model/user_model.dart';
 import 'package:login/repository/repository.dart';
-import 'package:login/ui/register_screen.dart';
+import 'package:login/ui/auth/new_password_screen.dart';
 
 class ForgetPassWordScreen extends StatefulWidget {
   const ForgetPassWordScreen({
@@ -99,24 +99,30 @@ class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
   _getData() async {
     List<UserModel> result = await _repository.getUsers();
     bool k = false;
+    int userId = 0;
     for (int i = 0; i < result.length; i++) {
       if (result[i].name == _controllerName.text &&
           result[i].surname == _controllerSurName.text) {
         k = true;
+        userId == result[i].id;
         break;
       }
     }
     if (k) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return const RegisterScreen();
+            return NewPasswordScreen(
+              name: _controllerName.text,
+              surname: _controllerSurName.text,
+              userId: userId,
+            );
           },
         ),
       );
     } else {
-      CenterDialog.showErrorDialogName(context);
+      CenterDialog.showErrorDialog(context, "Login yoki parol xato");
     }
   }
 }

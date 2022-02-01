@@ -3,7 +3,9 @@ import 'package:login/bloc/user_bloc.dart';
 import 'package:login/model/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  int Id;
+
+  HomeScreen({required this.Id});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -25,21 +27,31 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: userBloc.fetchUser,
         builder: (context, AsyncSnapshot<List<UserModel>> snapshot) {
           if (snapshot.hasData) {
-              List<UserModel> result = snapshot.data!;
+            List<UserModel> result = snapshot.data!;
             return Container(
               color: Colors.orange,
               child: ListView.builder(
                 itemCount: result.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    child: Column(
+                  if (result[index].id == widget.Id) {
+                    return Column(
                       children: [
                         Text(
                           result[index].name,
                         ),
+                        Text(
+                          result[index].surname,
+                        ),
+                        Text(
+                          result[index].login,
+                        ),
+                        Text(
+                          result[index].password,
+                        ),
                       ],
-                    ),
-                  );
+                    );
+                  }
+                  return Container();
                 },
               ),
             );

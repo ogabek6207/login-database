@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   final Repository _repository = Repository();
+  int Id = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 // End Input Password Conatiner
-
-                // Start Input Password Conatiner
-
                 GestureDetector(
                   onTap: () {
                     _getData();
@@ -233,6 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (result[i].login == controllerName.text &&
           result[i].password == controllerPassword.text) {
         k = true;
+        Id += result[i].id;
         break;
       }
     }
@@ -241,12 +240,14 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return const HomeScreen();
+            return HomeScreen(
+              Id: Id,
+            );
           },
         ),
       );
     } else {
-      CenterDialog.showErrorDialog(context);
+      CenterDialog.showErrorDialog(context, "Login yoki parol xato");
     }
   }
 }
