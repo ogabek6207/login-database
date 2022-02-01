@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:login/ui/home_screen.dart';
+import 'package:login/repository/repository.dart';
+
+import '../model/user_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -42,8 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               color: Colors.black.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Expanded(
-              child: TextField(
+            child: TextField(
                 controller: _controllerName,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
@@ -51,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-          ),
+
           const SizedBox(
             height: 12,
           ),
@@ -109,6 +112,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 labelText: "password",
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onTap: () async {
+              Repository _repository = Repository();
+              if (_controllerName.text.length >= 3) {
+                int userId = await _repository.saveUser(
+                  UserModel(
+                    id: 0,
+                    name: _controllerName.text,
+                    surname: _controllerSurName.text,
+                    login: _controllerLogin.text,
+                    password: _controllerPassword.text,
+                  ),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const HomeScreen();
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              height: 52,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
