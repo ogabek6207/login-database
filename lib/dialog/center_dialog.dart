@@ -32,4 +32,34 @@ class CenterDialog {
           );
         });
   }
+  static void showErrorDialogName(
+      BuildContext context,
+      ) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: const Text("Ism yoki Familya xato"),
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 44,
+                  color: Colors.transparent,
+                  child:  const Center(
+                    child: Text("ok",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
 }

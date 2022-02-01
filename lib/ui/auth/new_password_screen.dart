@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:login/dialog/center_dialog.dart';
 import 'package:login/model/user_model.dart';
 import 'package:login/repository/repository.dart';
-import 'package:login/ui/register_screen.dart';
 
-class ForgetPassWordScreen extends StatefulWidget {
-  const ForgetPassWordScreen({
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _ForgetPassWordScreenState createState() => _ForgetPassWordScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerSurName = TextEditingController();
+  final TextEditingController _controllerLogin = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
   final Repository _repository = Repository();
 
   @override
@@ -26,7 +27,7 @@ class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Forgot Password",
+          "Register",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -76,9 +77,62 @@ class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
           const SizedBox(
             height: 12,
           ),
+          Container(
+            height: 52,
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: _controllerLogin,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: "login",
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Container(
+            height: 52,
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: _controllerPassword,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: "password",
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
           GestureDetector(
             onTap: () async {
-              _getData();
+              if (_controllerName.text.length >= 3) {
+                int userId = await _repository.saveUser(
+                  UserModel(
+                    name: _controllerName.text,
+                    surname: _controllerSurName.text,
+                    login: _controllerLogin.text,
+                    password: _controllerPassword.text,
+                  ),
+                );
+                print(userId);
+                if (userId >= 0) {
+                  Navigator.pop(context);
+                }
+              }
             },
             child: Container(
               height: 52,
@@ -94,29 +148,5 @@ class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
         ],
       ),
     );
-  }
-
-  _getData() async {
-    List<UserModel> result = await _repository.getUsers();
-    bool k = false;
-    for (int i = 0; i < result.length; i++) {
-      if (result[i].name == _controllerName.text &&
-          result[i].surname == _controllerSurName.text) {
-        k = true;
-        break;
-      }
-    }
-    if (k) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const RegisterScreen();
-          },
-        ),
-      );
-    } else {
-      CenterDialog.showErrorDialogName(context);
-    }
   }
 }
