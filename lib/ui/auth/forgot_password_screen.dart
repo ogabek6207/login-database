@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:login/dialog/center_dialog.dart';
+import 'package:login/model/user_model.dart';
 import 'package:login/repository/repository.dart';
+import 'package:login/ui/register_screen.dart';
 
-import '../model/user_model.dart';
-
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({
+class ForgetPassWordScreen extends StatefulWidget {
+  const ForgetPassWordScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _ForgetPassWordScreenState createState() => _ForgetPassWordScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _ForgetPassWordScreenState extends State<ForgetPassWordScreen> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerSurName = TextEditingController();
-  final TextEditingController _controllerLogin = TextEditingController();
-  final TextEditingController _controllerPassword = TextEditingController();
   final Repository _repository = Repository();
 
   @override
@@ -27,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Register",
+          "Forgot Password",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -77,62 +76,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(
             height: 12,
           ),
-          Container(
-            height: 52,
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: TextField(
-              controller: _controllerLogin,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                labelText: "login",
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Container(
-            height: 52,
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: TextField(
-              controller: _controllerPassword,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                labelText: "password",
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
           GestureDetector(
             onTap: () async {
-              if (_controllerName.text.length >= 3) {
-                int userId = await _repository.saveUser(
-                  UserModel(
-                    name: _controllerName.text,
-                    surname: _controllerSurName.text,
-                    login: _controllerLogin.text,
-                    password: _controllerPassword.text,
-                  ),
-                );
-                print(userId);
-                if (userId >= 0) {
-                  Navigator.pop(context);
-                }
-              }
+              _getData();
             },
             child: Container(
               height: 52,
@@ -148,5 +94,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ],
       ),
     );
+  }
+
+  _getData() async {
+    List<UserModel> result = await _repository.getUsers();
+    bool k = false;
+    for (int i = 0; i < result.length; i++) {
+      if (result[i].name == _controllerName.text &&
+          result[i].surname == _controllerSurName.text) {
+        k = true;
+        break;
+      }
+    }
+    if (k) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const RegisterScreen();
+          },
+        ),
+      );
+    } else {
+      CenterDialog.showErrorDialog(context);
+    }
   }
 }

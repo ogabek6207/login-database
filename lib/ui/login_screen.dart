@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:login/dialog/center_dialog.dart';
+import 'package:login/model/user_model.dart';
+import 'package:login/repository/repository.dart';
+import 'package:login/ui/home_screen.dart';
 import 'package:login/ui/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,8 +13,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController namecontroller = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
+  final Repository _repository = Repository();
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                // End Bio Container
-
-                // Start Input Email Conatiner
                 Container(
                   margin: const EdgeInsets.only(top: 28, left: 16, right: 16),
                   width: w,
@@ -75,17 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Row(
                     children: [
                       const SizedBox(
-                        width: 15,
-                      ),
-                      SvgPicture.asset("assets/icons/User.svg"),
-                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: TextField(
-                          controller: namecontroller,
+                          controller: controllerName,
                           decoration: const InputDecoration(
-                            hintText: "Full Name",
+                            hintText: "Login",
                             border: InputBorder.none,
                           ),
                         ),
@@ -93,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                // End Input Email Conatiner
-
+                // End Input Email Container
                 // Start Input Password Conatiner
 
                 Container(
@@ -110,15 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Row(
                     children: [
                       const SizedBox(
-                        width: 15,
-                      ),
-                      SvgPicture.asset("assets/icons/Password.svg"),
-                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: TextField(
-                          controller: passwordcontroller,
+                          controller: controllerPassword,
                           decoration: const InputDecoration(
                             hintText: "Password",
                             border: InputBorder.none,
@@ -221,5 +213,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _getData() async {}
+  _getData() async {
+    List<UserModel> result = await _repository.getUsers();
+    bool k = false;
+    for (int i = 0; i < result.length; i++) {
+      if (result[i].login == controllerName.text &&
+          result[i].password == controllerPassword.text) {
+        k = true;
+        break;
+      }
+    }
+    if (k) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const HomeScreen();
+          },
+        ),
+      );
+    } else {
+      CenterDialog.showErrorDialog(context);
+    }
+  }
 }

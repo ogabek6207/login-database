@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: userBloc.fetchUser,
         builder: (context, AsyncSnapshot<List<UserModel>> snapshot) {
           if (snapshot.hasData) {
-            List<UserModel> result = snapshot.data!;
+              List<UserModel> result = snapshot.data!;
             return Container(
               color: Colors.orange,
               child: ListView.builder(
